@@ -23,7 +23,8 @@ jobs:
         id: meta
         run: |
           RAW_NAME=$(jq -r '.pack.name // "release"' pack.mcmeta)
-          NAME=$(echo "$RAW_NAME" | xargs | tr -c '[:alnum:]._-' '_')
+          TRIMMED_NAME=$(echo "$RAW_NAME" | xargs)
+          NAME=$(printf '%s' "$TRIMMED_NAME" | tr -c '[:alnum:]._-' '_')
           [ -z "$NAME" ] && NAME="release"
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
 
