@@ -1,0 +1,12 @@
+{
+    "pack": {
+        "name": "test-1.21.1",
+        "description": [
+            {
+                "text": "Test"
+            }
+        ]
+    },
+    "min_format": [88, 0],
+    "max_format": [88, 0]
+}

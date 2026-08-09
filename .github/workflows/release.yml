@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get project meta
+        id: meta
+        run: |
+          RAW_NAME=$(jq -r '.pack.name // "release"' pack.mcmeta)
+          NAME=$(echo "$RAW_NAME" | xargs | tr -c '[:alnum:]._-' '_')
+          [ -z "$NAME" ] && NAME="release"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Zip pack files
+        env:
+          NAME: ${{ steps.meta.outputs.name }}
+        run: |
+          zip -r "$NAME.zip" . -x '.git/*' '.github/*' '.gitignore'
+
+      - name: Create a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ steps.meta.outputs.name }}
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          gh release create "$TAG" --title "$TAG" --generate-notes "$NAME.zip"
