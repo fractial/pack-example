@@ -48,4 +48,4 @@ jobs:
           NAME: ${{ steps.meta.outputs.name }}
           TAG: ${{ inputs.tag || github.ref_name }}
         run: |
-          gh release create "$TAG" --title "$TAG" --generate-notes "$NAME.zip "$NAME.zip.sha1""
+          gh release create "$TAG" --title "$TAG" --generate-notes "$NAME.zip" "$NAME.zip.sha1"
